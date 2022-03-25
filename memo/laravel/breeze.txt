@@ -1,0 +1,17 @@
+＜breezeの導入＞
+
+・プロジェクトを作成してマイグレイト
+php artisan migrate
+
+・composerでインストール
+composer require laravel/breeze --dev
+
+・artisanコマンドでインストール
+php artisan breeze:install
+※ inertisaでvueを使用する場合↓
+php artisan breeze:install vue
+
+・nodeモジュールのインストール、アセットのコンパイル、マイグレイト
+npm install
+npm run dev
+php artisan migrate

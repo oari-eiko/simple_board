@@ -1,0 +1,24 @@
+＜laravelプロジェクトの導入＞
+
+・プロジェクトをバージョン指定で作成
+composer create-project "laravel/laravel=9.*" プロジェクト名
+
+・storageディレクトリに書き込み権限を与える
+chmod -R 777 ./storage
+
+・config/app.phpの設定を修正
+'timezone' => 'Asia/Tokyo',
+'locale' => 'ja',
+'fallback_locale' => 'ja',
+'faker_locale' => 'ja_JP',
+
+・.envファイルの設定を修正
+DB_CONNECTION: mysql
+DB_HOST=
+DB_PORT=
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+
+・マイグレイトしてデータベースを更新
+php artisan migrate
