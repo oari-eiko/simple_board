@@ -1,7 +1,7 @@
 # DockerHubから公式のdockerイメージを取り込む
 FROM php:8.1-fpm
 
-# composerのインストール（RUNはコンテナ内でコマンド実行）
+# composerのインストール
 RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
 # ミドルウェアのインストール
@@ -13,7 +13,7 @@ unzip \
 vim \
 libpng-dev \
 libpq-dev \
-&& docker-php-ext-install pdo_mysql mysqli
+&& docker-php-ext-install mysqli
 
 # Node.jsとnpmをインストール
 RUN apt-get -y install nodejs npm
