@@ -20,14 +20,15 @@ services:
     volumes:
       - ./docker/app/src:/app
     # 環境変数
-    environment:
-      - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOST=${ALLOWED_HOSTS}
+    env_file:
+      - ./.env.dev
     # 作業ディレクトリ
     working_dir: /app
     # 起動し続ける
     tty: true
+    # 指定コンテナの後に起動
+    depends_on:
+      - db
 
   # ---------------------------------
   # Webサーバー(Nginx)
@@ -55,50 +56,42 @@ services:
   #     - app
 
   # ---------------------------------
-  # データベース(MySQL)
+  # データベース(PostgreSQL)
   # ---------------------------------
-  # db:
-  #   # コンテナ名
-  #   container_name: simple_board_db
-  #   # 公式イメージからビルド
-  #   image: mysql:8
-  #   # ポート指定（コンテナ）
-  #   expose:
-  #     - '${DB_PORT}'
-  #   # ボリューム（Bind Mounts）
-  #   volumes:
-  #     - ./docker/db/data:/var/lib/mysql                    # データ
-  #     - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf        # 設定ファイル
-  #     - ./docker/db/logs:/var/log/mysql                    # ログファイル
-  #     - ./docker/db/sql:/docker-entrypoint-initdb.d        # 初期化SQL
-  #   # 環境変数 
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
-  #     - MYSQL_DATABASE=${DB_NAME}
-  #     - MYSQL_USER=${DB_USER}
-  #     - MYSQL_PASSWORD=${DB_PASS}
-  #     - TZ=${TZ}
+  db:
+    # コンテナ名
+    container_name: simple_board_db
+    # 公式イメージからビルド
+    image: postgres:14
+    # ポート指定（コンテナ）
+    ports:
+      - '5432:5432'
+    # ボリューム（Bind Mounts）
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data                       # データ
+      - ./docker/db/sql:/docker-entrypoint-initdb.d                     # 初期化SQL
+      - ./docker/db/postgresql.conf:/etc/postgresql/postgresql.conf     # 設定ファイル
+    # 環境変数 
+    env_file:
+      - ./.env.dev
 
-  # # ---------------------------------
-  # # クライアントツール(PhpMyAdmin)
-  # # ---------------------------------
-  # client:
-  #   # コンテナ名
-  #   container_name: simple_board_client
-  #   # 公式イメージからビルド
-  #   image: phpmyadmin:5
-  #   # ポート指定（ホスト:コンテナ）
-  #   ports:
-  #     - '4040:${WEB_PORT}'
-  #   # ボリューム（Bind Mounts）
-  #   volumes:
-  #     - ./docker/client/sessions:/sessions
-  #   # 環境変数
-  #   environment:
-  #     - PMA_ARBITRARY=1
-  #     - PMA_HOSTS=${DB_HOST}
-  #     - PMA_USER=${DB_USER}
-  #     - PMA_PASSWORD=${DB_PASS}
-  #   # 指定コンテナ起動完了後に起動
-  #   depends_on:
-  #     - db
+  # ---------------------------------
+  # クライアントツール(pgAdmin)
+  # ---------------------------------
+  client:
+    # コンテナ名
+    container_name: simple_board_client
+    # 公式イメージからビルド
+    image: dpage/pgadmin4
+    # ポート指定（ホスト:コンテナ）
+    ports:
+      - '4040:80'
+    # ボリューム（Bind Mounts）
+    volumes:
+      - ./docker/client/pgadmin:/var/lib/pgadmin
+    # 環境変数
+    env_file:
+      - ./.env.dev
+    # 指定コンテナ起動完了後に起動
+    depends_on:
+      - db
