@@ -2,3 +2,4 @@
 *.log
 docker/client/pgadmin/
 docker/db/data/
+.env.dev
