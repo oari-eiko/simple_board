@@ -13,94 +13,92 @@ services:
     build:
       context: ./docker/app
       dockerfile: Dockerfile
+    # ポート指定
+    ports:
+      - 8000:8000
     # ボリューム（Bind Mounts）
     volumes:
-      - ./docker/app/src:/var/www/html                          # 公開用ディレクトリ
-      - ./docker/app/php.ini:/usr/local/etc/php/php.ini         # phpの設定ファイル
+      - ./docker/app/src:/app
     # 環境変数
     environment:
-      - DB_CONNECTION=mysql
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_DATABASE=${DB_NAME}
-      - DB_USERNAME=${DB_USER}
-      - DB_PASSWORD=${DB_PASS}
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOST=${ALLOWED_HOSTS}
     # 作業ディレクトリ
-    working_dir: /var/www/html
-    # 指定コンテナ起動完了後に起動
-    depends_on:
-      - db
+    working_dir: /app
+    # 起動し続ける
+    tty: true
 
   # ---------------------------------
   # Webサーバー(Nginx)
   # ---------------------------------
-  web:
-    # コンテナ名
-    container_name: simple_board_web
-    # 公式イメージからビルド
-    image: nginx:1.23
-    # ポート指定（ホスト:コンテナ）
-    ports:
-      - '8080:${WEB_PORT}'
-    # ボリューム（Bind Mounts）
-    volumes:
-      # - ./docker/app/src:/var/www/html            # nginx側にもappのソースを置く（なぜかcssやjsなどが参照できないため）
-      - ./docker/web/logs:/var/log/nginx
-      - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
-    # 環境変数
-    environment:
-      - TZ=${TZ}
-    # 作業ディレクトリ
-    working_dir: /var/www/html
-    # 指定コンテナ起動完了後に起動
-    depends_on:
-      - app
+  # web:
+  #   # コンテナ名
+  #   container_name: simple_board_web
+  #   # 公式イメージからビルド
+  #   image: nginx:1.23
+  #   # ポート指定（ホスト:コンテナ）
+  #   ports:
+  #     - '8080:${WEB_PORT}'
+  #   # ボリューム（Bind Mounts）
+  #   volumes:
+  #     # - ./docker/app/src:/var/www/html            # nginx側にもappのソースを置く（なぜかcssやjsなどが参照できないため）
+  #     - ./docker/web/logs:/var/log/nginx
+  #     - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
+  #   # 環境変数
+  #   environment:
+  #     - TZ=${TZ}
+  #   # 作業ディレクトリ
+  #   working_dir: /var/www/html
+  #   # 指定コンテナ起動完了後に起動
+  #   depends_on:
+  #     - app
 
   # ---------------------------------
   # データベース(MySQL)
   # ---------------------------------
-  db:
-    # コンテナ名
-    container_name: simple_board_db
-    # 公式イメージからビルド
-    image: mysql:8
-    # ポート指定（コンテナ）
-    expose:
-      - '${DB_PORT}'
-    # ボリューム（Bind Mounts）
-    volumes:
-      - ./docker/db/data:/var/lib/mysql                    # データ
-      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf        # 設定ファイル
-      - ./docker/db/logs:/var/log/mysql                    # ログファイル
-      - ./docker/db/sql:/docker-entrypoint-initdb.d        # 初期化SQL
-    # 環境変数 
-    environment:
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASS}
-      - TZ=${TZ}
+  # db:
+  #   # コンテナ名
+  #   container_name: simple_board_db
+  #   # 公式イメージからビルド
+  #   image: mysql:8
+  #   # ポート指定（コンテナ）
+  #   expose:
+  #     - '${DB_PORT}'
+  #   # ボリューム（Bind Mounts）
+  #   volumes:
+  #     - ./docker/db/data:/var/lib/mysql                    # データ
+  #     - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf        # 設定ファイル
+  #     - ./docker/db/logs:/var/log/mysql                    # ログファイル
+  #     - ./docker/db/sql:/docker-entrypoint-initdb.d        # 初期化SQL
+  #   # 環境変数 
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+  #     - MYSQL_DATABASE=${DB_NAME}
+  #     - MYSQL_USER=${DB_USER}
+  #     - MYSQL_PASSWORD=${DB_PASS}
+  #     - TZ=${TZ}
 
-  # ---------------------------------
-  # クライアントツール(PhpMyAdmin)
-  # ---------------------------------
-  client:
-    # コンテナ名
-    container_name: simple_board_client
-    # 公式イメージからビルド
-    image: phpmyadmin:5
-    # ポート指定（ホスト:コンテナ）
-    ports:
-      - '4040:${WEB_PORT}'
-    # ボリューム（Bind Mounts）
-    volumes:
-      - ./docker/client/sessions:/sessions
-    # 環境変数
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOSTS=${DB_HOST}
-      - PMA_USER=${DB_USER}
-      - PMA_PASSWORD=${DB_PASS}
-    # 指定コンテナ起動完了後に起動
-    depends_on:
-      - db
+  # # ---------------------------------
+  # # クライアントツール(PhpMyAdmin)
+  # # ---------------------------------
+  # client:
+  #   # コンテナ名
+  #   container_name: simple_board_client
+  #   # 公式イメージからビルド
+  #   image: phpmyadmin:5
+  #   # ポート指定（ホスト:コンテナ）
+  #   ports:
+  #     - '4040:${WEB_PORT}'
+  #   # ボリューム（Bind Mounts）
+  #   volumes:
+  #     - ./docker/client/sessions:/sessions
+  #   # 環境変数
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #     - PMA_HOSTS=${DB_HOST}
+  #     - PMA_USER=${DB_USER}
+  #     - PMA_PASSWORD=${DB_PASS}
+  #   # 指定コンテナ起動完了後に起動
+  #   depends_on:
+  #     - db
