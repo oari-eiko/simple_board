@@ -24,11 +24,11 @@ services:
       - ./.env.dev
     # 作業ディレクトリ
     working_dir: /app
-    # 起動し続ける
-    tty: true
     # 指定コンテナの後に起動
     depends_on:
       - db
+    # サーバーを立ち上げる
+    command: gunicorn simple_board.wsgi:application --bind 0.0.0.0:8000
 
   # ---------------------------------
   # Webサーバー(Nginx)
