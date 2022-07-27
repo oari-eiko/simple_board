@@ -1,5 +1,9 @@
+# ファイル/拡張子
 .env
 *.log
+.env.dev
+
+# コンテナ内
 docker/client/pgadmin/
 docker/db/data/
-.env.dev
+docker/app/src/static/admin/
