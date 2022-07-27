@@ -14,8 +14,8 @@ services:
       context: ./docker/app
       dockerfile: Dockerfile
     # ポート指定
-    ports:
-      - 8000:8000
+    expose:
+      - '8000'
     # ボリューム（Bind Mounts）
     volumes:
       - ./docker/app/src:/app
@@ -33,27 +33,27 @@ services:
   # ---------------------------------
   # Webサーバー(Nginx)
   # ---------------------------------
-  # web:
-  #   # コンテナ名
-  #   container_name: simple_board_web
-  #   # 公式イメージからビルド
-  #   image: nginx:1.23
-  #   # ポート指定（ホスト:コンテナ）
-  #   ports:
-  #     - '8080:${WEB_PORT}'
-  #   # ボリューム（Bind Mounts）
-  #   volumes:
-  #     # - ./docker/app/src:/var/www/html            # nginx側にもappのソースを置く（なぜかcssやjsなどが参照できないため）
-  #     - ./docker/web/logs:/var/log/nginx
-  #     - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf
-  #   # 環境変数
-  #   environment:
-  #     - TZ=${TZ}
-  #   # 作業ディレクトリ
-  #   working_dir: /var/www/html
-  #   # 指定コンテナ起動完了後に起動
-  #   depends_on:
-  #     - app
+  web:
+    # コンテナ名
+    container_name: simple_board_web
+    # 公式イメージからビルド
+    image: nginx:1.23
+    # ポート指定（ホスト:コンテナ）
+    ports:
+      - '1317:80'
+    # ボリューム（Bind Mounts）
+    volumes:
+      - ./docker/app/src/static:/app/static                             # 静的ファイル（css,jsなど）
+      - ./docker/app/src/media:/app/media                               # メディアファイル（ユーザーの画像など）
+      - ./docker/web/logs:/var/log/nginx                                # ログフォルダー
+      - ./docker/web/default.conf:/etc/nginx/conf.d/default.conf        # 設定ファイル
+    # 環境変数
+    env_file:
+      - ./.env.dev
+    # 指定コンテナ起動完了後に起動
+    depends_on:
+      - app
+      - db
 
   # ---------------------------------
   # データベース(PostgreSQL)
