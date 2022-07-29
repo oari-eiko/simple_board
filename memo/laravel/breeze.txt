@@ -6,9 +6,7 @@ php artisan migrate
 ・composerでインストール
 composer require laravel/breeze --dev
 
-・artisanコマンドでインストール
-php artisan breeze:install
-※ inertisaでvueを使用する場合↓
+・artisanコマンドでインストール（vueを利用する場合）
 php artisan breeze:install vue
 
 ・nodeモジュールのインストール、アセットのコンパイル、マイグレイト
