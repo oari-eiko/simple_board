@@ -62,6 +62,8 @@ services:
       - SQL_HOST=${SQL_HOST}
       - SQL_PORT=${SQL_PORT}
       - TZ=${TZ}
+      - DEV_PORT=${DEV_PORT}
+      - APP_PORT=${APP_PORT}
     # サーバーを立ち上げる
     command: gunicorn --config /api/gunicorn.py
 

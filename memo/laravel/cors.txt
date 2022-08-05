@@ -1,0 +1,13 @@
+＜Djangoのクロスオリジン設定＞
+・モジュールインストール
+pip install django-cors-headers
+
+・djangoのsettings.pyのINSTALL_APPSに以下追記
+'corsheaders'
+
+・djangoのsettings.pyのMIDDLEWAREに以下追記
+'corsheaders.middleware.CorsMiddleware'
+
+・djangoのsettingsに以下追記
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ('http://localhost:8888',)  ← 許可するホスト

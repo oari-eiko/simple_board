@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
 INSTALLED_APPS = [
     'board.apps.BoardConfig',               # boardアプリ
     'rest_framework',                       # djangorestframework使用
+    'corsheaders',                          # Django CORS Headers
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Django CORS Headers
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,3 +132,10 @@ STATIC_URL = os.path.join(BASE_DIR, "static")
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# クロスオリジン設定
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:'+os.getenv('DEV_PORT'),      # 開発環境用
+    'http://localhost:'+os.getenv('APP_PORT'),      # 本番環境用
+)
