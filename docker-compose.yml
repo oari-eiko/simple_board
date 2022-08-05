@@ -63,8 +63,7 @@ services:
       - SQL_PORT=${SQL_PORT}
       - TZ=${TZ}
     # サーバーを立ち上げる
-    # command: gunicorn simple_board.wsgi:application --bind 0.0.0.0:8000
-    tty: true
+    command: gunicorn --config /api/gunicorn.py
 
   # ---------------------------------
   # Webサーバー(Nginx)
