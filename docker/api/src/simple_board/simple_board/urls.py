@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', include('board.urls')),
     path('admin/', admin.site.urls),
 ]
+
+# adminページやapiページでstaticを参照
+urlpatterns += staticfiles_urlpatterns()
