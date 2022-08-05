@@ -1,3 +1,4 @@
+import multiprocessing
 #
 # Gunicorn config file
 #
@@ -20,7 +21,7 @@ bind = '0.0.0.0:8080'
 
 # Worker Processes
 #========================================
-workers = 10
+workers = (multiprocessing.cpu_count()*2) + 1
 
 #  Logging
 #========================================
