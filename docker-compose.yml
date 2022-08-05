@@ -15,7 +15,7 @@ services:
       dockerfile: Dockerfile
     # ポート
     ports:
-      - '8888:8888'
+      - '${DEV_PORT}:${DEV_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
       - ./docker/app/src:/app
@@ -41,8 +41,8 @@ services:
       context: ./docker/api
       dockerfile: Dockerfile
     # ポート指定
-    expose:
-      - '${API_PORT}'
+    ports:
+      - '${API_PORT}:${API_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
       - ./docker/api/src:/api
