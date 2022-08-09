@@ -11,13 +11,18 @@ function laodView(view) {
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: laodView('HomeView')
+    name: 'board',
+    component: laodView('BoardView')
   },
   {
-    path: '/about',
-    name: 'about',
-    component: laodView('AboutView')
+    path: '/login',
+    name: 'login',
+    component: laodView('LoginView')
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: laodView('SignupView')
   }
 ]
 
