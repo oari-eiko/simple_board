@@ -1,6 +1,8 @@
 ＜環境構築における参考サイト＞
 https://tomato-develop.com/docker-dockercompose-python-django-postgresql-gunicorn-nginx-how-to-build-development-and-production-environment/
 
-
 ＜staticの場所を移す＞
 python manage.py collectstatic
+
+＜tailwindcss->vue＞
+https://tailwindcss.com/docs/guides/vite
