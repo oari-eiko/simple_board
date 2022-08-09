@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store/index'
 
-// import HomeView from '../views/HomeView.vue'   ← これでも読み込める
-
-// DynamicImport で読み込む関数
+// DynamicImportで読み込む
 function laodView(view) {
   return () => import(/* webpackChunkName: "about" */ `@/views/${view}.vue`)
 }
@@ -11,8 +10,14 @@ function laodView(view) {
 const routes = [
   {
     path: '/',
+    name: 'top',
+    component: laodView('TopView')
+  },
+  {
+    path: '/board',
     name: 'board',
-    component: laodView('BoardView')
+    component: laodView('BoardView'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
@@ -31,5 +36,19 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  // 認証必要なパスかどうか
+  if (to.matched.some((recode) => recode.meta.requiresAuth)) {
+    // ログインチェック
+    if (store.getters.loggedIn) {
+      next({ name: 'login' })
+    } else {
+      next();
+    }
+    
+  // 要らない場合はスルー 
+  } else next();
+});
 
 export default router
