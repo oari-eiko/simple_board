@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store/index'
+import { store } from '@/store'
 
 // DynamicImportで読み込む
 function laodView(view) {
@@ -41,8 +41,8 @@ router.beforeEach((to, from, next) => {
   // 認証必要なパスかどうか
   if (to.matched.some((recode) => recode.meta.requiresAuth)) {
     // ログインチェック
-    if (store.getters.loggedIn) {
-      next({ name: 'login' })
+    if (!store.getters.loggedIn) {
+      next({name: 'login'});
     } else {
       next();
     }
