@@ -41,8 +41,6 @@ export default {
         axios.post('http://localhost:8080/users/', {
           name: this.username,
           password: this.password,
-          created_at: '2022-08-10 16:34:10',         // 一旦固定値
-          updated_at: '2022-08-10 16:34:10',         // 一旦固定値
         })
         .then(response => {
           this.postResponse = response;
