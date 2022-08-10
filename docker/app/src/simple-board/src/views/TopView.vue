@@ -49,7 +49,7 @@ export default {
     }
   },
   mounted() {
-    axios.get('http://localhost:8080/user/')
+    axios.get('http://localhost:8080/users/')
     .then(response => { this.users = response.data; })
     .catch(error => console.log(error));
   },

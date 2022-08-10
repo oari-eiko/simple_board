@@ -38,7 +38,7 @@ export default {
     // サインアップ処理
     signup () {
       if (this.username!=='' && this.password!=='') {
-        axios.post('http://localhost:8080/user/', {
+        axios.post('http://localhost:8080/users/', {
           name: this.username,
           password: this.password,
           created_at: '2022-08-10 16:34:10',         // 一旦固定値

@@ -7,7 +7,7 @@ from .views import UserViewSet
 apiRouter = routers.DefaultRouter()
 
 # userルート登録
-apiRouter.register('user', UserViewSet)
+apiRouter.register('users', UserViewSet)
 
 # ルーティング
 urlpatterns = [
