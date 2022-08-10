@@ -38,11 +38,11 @@ export default {
     // サインアップ処理
     signup () {
       if (this.username!=='' && this.password!=='') {
-        axios.post('http://localhost:8080/api/user/', {
+        axios.post('http://localhost:8080/user/', {
           name: this.username,
           password: this.password,
-          created_at: '2022-08-10 13:34:10',         // 一旦固定値
-          updated_at: '2022-08-10 13:34:10',         // 一旦固定値
+          created_at: '2022-08-10 16:34:10',         // 一旦固定値
+          updated_at: '2022-08-10 16:34:10',         // 一旦固定値
         })
         .then(response => {
           this.postResponse = response;
