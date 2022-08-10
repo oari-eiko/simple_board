@@ -1,5 +1,6 @@
 gunicorn 
-django == 3.2
 psycopg2-binary
+django == 3.2
+django-filter
 djangorestframework
 django-cors-headers
