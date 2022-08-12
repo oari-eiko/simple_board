@@ -1,6 +1,7 @@
+from hashlib import sha256
 from rest_framework import serializers
 from .models import User
-import hashlib
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,9 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     # ユーザー作成時にパスワードを暗号化する
     def create(self, validated_data):
+        pw = validated_data.pop('password')
         new_user = User(
-            name = validated_data['name'],
-            password = hashlib.sha256(validated_data['password'].encode()).hexdigest()
+            password = sha256(pw.encode()).hexdigest(),
+            **validated_data,
         )
         new_user.save()
         return new_user
