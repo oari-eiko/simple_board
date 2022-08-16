@@ -4,7 +4,7 @@ version: '3'
 # 各コンテナ定義
 services:
   # ---------------------------------
-  # アプリケーションサーバー（Vue.js）
+  # アプリケーションサーバー（React.js）
   # ---------------------------------
   app:
     # コンテナ名
@@ -23,6 +23,7 @@ services:
     working_dir: /app
     # 環境変数
     environment:
+      - PORT=${DEV_PORT}                # 開発用ポート
       - TZ=${TZ}
     # 指定コンテナの後に起動
     depends_on:

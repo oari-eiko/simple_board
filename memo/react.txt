@@ -1,0 +1,24 @@
+＜各種コマンド＞
+・アプリ作成コマンド
+npx create-react-app my-app
+・開発用サーバー立ち上げ
+npm start
+・ビルド
+npm run build
+
+＜フック＞
+・インポート
+import { useState, useEffect } from 'react';
+・useState ⇒ 変数の状態を管理
+・useEffect ⇒ レンダー後の処理を指定
+
+＜ホットリロード設定＞
+package.jsonの一部分を以下のように修正
+"start": "react-scripts start"
+⇒ "start": "WATCHPACK_POLLING=true react-scripts start"
+
+＜tailwindcssの導入＞
+参考 ⇒ https://tailwindcss.com/docs/guides/create-react-app
+
+＜React Router＞
+npm install react-router-dom
