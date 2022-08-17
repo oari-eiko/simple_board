@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Testコンポーネント
 function Test(props) {
   // 値保持
   const [now, setNow] = useState(new Date().toLocaleString());
@@ -20,7 +19,7 @@ function Test(props) {
     setMsg(inputValue);
   }
   
-  // jsxを返す
+  // JSX
   return (
     <div className="Test container mx-auto">
       <div className='flex flex-col'>

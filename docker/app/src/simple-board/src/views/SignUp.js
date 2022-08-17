@@ -1,8 +1,5 @@
-// import { useState, useEffect } from 'react';
-
-// Topコンポーネント
 function SignUp(props) {
-  // jsxを返す
+  // JSX
   return (
     <div className="Test container mx-auto">
       <div className='flex flex-col bg-gray-200'>
