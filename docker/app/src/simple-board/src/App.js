@@ -12,6 +12,7 @@ import './App.css';
 // Views
 import Top from './views/Top';
 import SignUp from './views/SignUp';
+import LogIn from './views/LogIn';
 import NotFound from './views/NotFound';
 
 // Components
@@ -32,6 +33,7 @@ function App() {
           <Routes>
             <Route exact path='/' element={<Top />} />
             <Route path='signup' element={<SignUp />} />
+            <Route path='login' element={<LogIn />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

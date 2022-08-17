@@ -14,9 +14,9 @@ function Top() {
       let UserList = res.data.map(user => {
         return (
           <tr key={user.id}>
-            <td>{user.id}</td>  
-            <td>{user.name}</td>  
-            <td>{user.created_at}</td>  
+            <td className='border border-white py-3 px-4'>{user.id}</td>  
+            <td className='border border-white py-3 px-4'>{user.name}</td>  
+            <td className='border border-white py-3 px-4'>{new Date(user.created_at).toLocaleString()}</td>  
           </tr>
         );
       });
@@ -27,26 +27,32 @@ function Top() {
 
   // JSX
   return (
-    <div className='flex flex-col bg-gray-200'>
+    <div className='flex flex-col my-3'>
       {/* ユーザーリスト */}
-      <table className='w-full my-3'>
+      <table className='max-w-1/3 my-3 mx-auto bg-gray-300'>
         <thead className='bg-gray-400'>
           <tr>
-            <th className='border border-white'>ID</th>
-            <th className='border border-white'>Name</th>
-            <th className='border border-white'>Day</th>
+            <th className='border border-white py-3 px-4'>ID</th>
+            <th className='border border-white py-3 px-4'>Name</th>
+            <th className='border border-white py-3 px-4'>Date</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className='text-center'>
           {userItems}
         </tbody>
       </table>
 
-      {/* サインアップ */}
-      <div className='mx-auto'>  
+      <div className='flex mx-auto my-2'>
+        {/* サインアップ */}
         <Link to="/signup">
-          <button className='btn bg-cyan-600 py-2 px-5 my-2 font-bold rounded text-xl'>
+          <button className='w-32 btn bg-yellow-700 text-gray-200 py-2 px-5 mx-3 font-bold rounded text-md'>
             Sign Up
+          </button>
+        </Link>
+        {/* ログイン */}
+        <Link to="/login">
+          <button className='w-32 btn bg-cyan-700 text-gray-200 py-2 px-5 mx-3 font-bold rounded text-md'>
+            Log In
           </button>
         </Link>
       </div>
