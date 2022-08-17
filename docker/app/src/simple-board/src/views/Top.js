@@ -1,27 +1,29 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Top() {
   // state
-  const [userList, setUserList] = useState();
+  const [userItems, setUserItems] = useState();
 
-  // 全ユーザー取得API
-  axios
-  .get('http://localhost:8080/users/')
-  .then(res => {
-    let Users = res.data.map(user => {
-      return (
-        <tr key={user.id}>
-          <td>{user.id}</td>  
-          <td>{user.name}</td>  
-          <td>{user.created_at}</td>  
-        </tr>
-      );
-    });
-    setUserList(Users);
-  })
-  .catch(err => console.log(err));
+  // effect
+  useEffect(() => {
+    // 全ユーザー取得API
+    axios.get('http://localhost:8080/users/')
+    .then(res => {
+      let UserList = res.data.map(user => {
+        return (
+          <tr key={user.id}>
+            <td>{user.id}</td>  
+            <td>{user.name}</td>  
+            <td>{user.created_at}</td>  
+          </tr>
+        );
+      });
+      setUserItems(UserList);
+    })
+    .catch(err => console.log(err));
+  }, []);
 
   // JSX
   return (
@@ -36,7 +38,7 @@ function Top() {
           </tr>
         </thead>
         <tbody>
-          {userList}
+          {userItems}
         </tbody>
       </table>
 
