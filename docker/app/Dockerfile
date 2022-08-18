@@ -9,5 +9,5 @@ zip \
 unzip \
 vim
 
-# vue関連インストール
-RUN npm install -g @vue/cli
+# npmアップデート
+RUN npm install -g npm@8.17.0
