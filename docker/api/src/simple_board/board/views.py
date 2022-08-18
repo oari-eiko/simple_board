@@ -19,5 +19,11 @@ class UserViewSet(viewsets.ModelViewSet):
         user_recode = User.objects.filter(
             name = request.data['username'],
             password = password
-        ).values('name','created_at')
+        ).values('name', 'created_at')
         return Response(data=user_recode, status=status.HTTP_200_OK)
+
+    # 指定ユーザー名を取得(クエリ―で指定)
+    @action(methods=['GET'], detail=False)
+    def get_username(self, request):
+        user_name = User.objects.filter(name = request.query_params['name']).values('name')
+        return Response(data=user_name, status=status.HTTP_200_OK)

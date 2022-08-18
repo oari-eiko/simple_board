@@ -1,8 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import axios from 'axios';
+
 // components
 import AlertMessage from '../components/AlertMessage';
 
 function SignUp() {
+  // ナビゲート生成
+  let navigate = useNavigate();
+
   // フォーム値
   const [ formValues, setFormValues ] = useState({ userName: '', passWord: '' });
   // エラーメッセージ
@@ -18,20 +24,44 @@ function SignUp() {
 
   // Submitイベントハンドラ
   function handleSubmit(event) {
+    // デフォルト動作を無くす
     event.preventDefault();
-    // バリデーション（ユーザー名）
-    let userNameError = '';
-    if (!/^[\w@\-_/+ ]{5,25}$/.test(formValues.userName)) {
-      userNameError = 'ユーザー名が有効な値ではありません。';
-    }
 
-    // バリデーション（パスワード）
-    let passWordError = '';
-    if (!/^[\w_\- ]{8,30}$/.test(formValues.passWord)) {
-      passWordError = 'パスワードが有効な値ではありません。';
-    }
-    // バリデーション結果を格納
-    setFormError({ userName: userNameError, passWord: passWordError });
+    // 既に登録済みかAPIで確認
+    axios
+    .get('http://localhost:8080/users/get_username?name='+formValues.userName)
+    .then(response => {
+      let userNameError = '';
+      let passWordError = '';
+
+      // 登録済みか確認
+      if (response.data.length !== 0) {
+        userNameError = 'そのユーザー名は既に使用されています。';
+      // バリデーション（ユーザー名）
+      } else if (!/^[\w@\-_/+ ]{4,25}$/.test(formValues.userName)) {
+        userNameError = 'ユーザー名が有効な値ではありません。';
+      }
+      // バリデーション（パスワード）
+      if (!/^[\w_\- ]{6,30}$/.test(formValues.passWord)) {
+        passWordError = 'パスワードが有効な値ではありません。';
+      }
+      // バリデーション結果を格納
+      setFormError({ userName: userNameError, passWord: passWordError });
+      
+      // 要件を満たしていればユーザーを登録
+      if (userNameError==='' && passWordError==='') {
+        axios.post('http://localhost:8080/users/', {
+          name: formValues.userName,
+          password: formValues.passWord,
+        })
+        // トップページにリダイレクト
+        .then(response => { navigate('/') })
+        // エラー表示
+        .catch(error => console.log(error) );
+      }
+    })
+    // エラー表示
+    .catch(error => console.log(error) );
   }
 
   // JSX
@@ -50,14 +80,14 @@ function SignUp() {
             <input name='userName' value={formValues.userName} onChange={handleChange} className="mx-3 appearance-none bg-transparent text-gray-700 leading-tight focus:outline-none w-full" type="text" placeholder="ユーザー名" maxLength="25" />
           </div>
           <div>
-            <p className='text-sm text-gray-500'><small>※5文字以上25字以下の半角英数字（半角記号「 @ - _ / + 」も可）</small></p>
+            <p className='text-sm text-gray-500'><small>※4文字以上25字以下の半角英数字（半角記号「 @ - _ / + 」も可）</small></p>
           </div>
           {/* <!-- パスワード --> */}
           <div className="border-b border-yellow-600 py-1 mt-2 text-left">
             <input name='passWord' value={formValues.passWord} onChange={handleChange} className="mx-3 appearance-none bg-transparent text-gray-700 leading-tight focus:outline-none w-full" type="password" placeholder="パスワード" maxLength="30" />        
           </div>
           <div>
-            <p className='text-sm text-gray-500 mb-4'><small>※8文字以上30字以下の半角英数字（半角記号「 _ - 」も可）</small></p>
+            <p className='text-sm text-gray-500 mb-4'><small>※6文字以上30字以下の半角英数字（半角記号「 _ - 」も可）</small></p>
           </div>
           {/* <!-- ボタン --> */}
           <div className="text-center my-4">
