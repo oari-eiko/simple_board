@@ -5,6 +5,9 @@ import axios from 'axios';
 // components
 import AlertMessage from '../components/AlertMessage';
 
+// utils
+import { validateUserName, validatePassWord } from '../utils/validation';
+
 function SignUp() {
   // ナビゲート生成
   let navigate = useNavigate();
@@ -14,7 +17,7 @@ function SignUp() {
   // エラーメッセージ
   const [ formError, setFormError ] = useState({ userName: '', passWord: '' });
 
-  // Chengaイベントハンドラ
+  // Changeイベントハンドラ
   function handleChange(event) {
     // 入力値を取得してname属性値をキーとして値を保持
     const key = event.target.name;
@@ -37,16 +40,18 @@ function SignUp() {
       // 登録済みか確認
       if (response.data.length !== 0) {
         userNameError = 'そのユーザー名は既に使用されています。';
+      
       // バリデーション（ユーザー名）
-      } else if (!/^[\w@\-_/+ ]{4,25}$/.test(formValues.userName)) {
-        userNameError = 'ユーザー名が有効な値ではありません。';
-      }
+      } else userNameError = validateUserName(formValues.userName);
+
       // バリデーション（パスワード）
-      if (!/^[\w_\- ]{6,30}$/.test(formValues.passWord)) {
-        passWordError = 'パスワードが有効な値ではありません。';
-      }
+      passWordError =  validatePassWord(formValues.passWord);
+      
       // バリデーション結果を格納
-      setFormError({ userName: userNameError, passWord: passWordError });
+      setFormError({
+        userName: userNameError,
+        passWord: passWordError,
+      });
       
       // 要件を満たしていればユーザーを登録
       if (userNameError==='' && passWordError==='') {
@@ -54,14 +59,16 @@ function SignUp() {
           name: formValues.userName,
           password: formValues.passWord,
         })
+        
         // トップページにリダイレクト
-        .then(response => { navigate('/') })
-        // エラー表示
+        .then(response => { navigate('/'); })
+        
+        // エラー表示（ユーザー登録API） 
         .catch(error => console.log(error) );
       }
-    })
-    // エラー表示
-    .catch(error => console.log(error) );
+    
+    // エラー表示（ユーザー名取得API）
+    }).catch(error => console.log(error) );
   }
 
   // JSX
