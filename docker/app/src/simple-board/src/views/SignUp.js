@@ -83,11 +83,11 @@ function SignUp() {
   // JSX
   return (
     <div className="my-4">
-      {/* フォームエラー（エラーあれば表示） */}
+      {/* アラート（あれば表示） */}
       <div className='max-w-md mx-auto'>
-        {formError.userName !== '' && <AlertMessage message={formError.userName} />}
-        {formError.passWord !== '' && <AlertMessage message={formError.passWord} />}
-        {formError.passWordSub !== '' && <AlertMessage message={formError.passWordSub} />}
+        {formError.userName !== '' && <AlertMessage message={formError.userName} type="warning" />}
+        {formError.passWord !== '' && <AlertMessage message={formError.passWord} type="warning" />}
+        {formError.passWordSub !== '' && <AlertMessage message={formError.passWordSub} type="warning" />}
       </div>
       {/* <!-- ログインフォーム --> */}
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>

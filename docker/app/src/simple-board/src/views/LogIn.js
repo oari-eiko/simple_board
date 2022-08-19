@@ -66,11 +66,11 @@ function LogIn() {
   // JSX
   return (
     <div className="my-4">
-      {/* フォームエラー */}
+      {/* アラート（あれば表示） */}
       <div className='max-w-md mx-auto'>
-        {formError.userName !== '' && <AlertMessage message={formError.userName} />}
-        {formError.passWord !== '' && <AlertMessage message={formError.passWord} />}
-        {formError.userAuth !== '' && <AlertMessage message={formError.userAuth} />}
+        {formError.userName !== '' && <AlertMessage message={formError.userName} type="warning" />}
+        {formError.passWord !== '' && <AlertMessage message={formError.passWord} type="warning" />}
+        {formError.userAuth !== '' && <AlertMessage message={formError.userAuth} type="warning" />}
       </div>
       {/* <!-- ログインフォーム --> */}
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
