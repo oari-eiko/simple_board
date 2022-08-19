@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -11,6 +11,8 @@ import { validateUserName, validatePassWord } from '../utils/validation';
 function LogIn() {
   // ナビゲート生成
   let navigate = useNavigate();
+  // ロケーション生成
+  let location = useLocation();
 
   // フォーム値
   const [ formValues, setFormValues ] = useState({ userName: '', passWord: '' });
@@ -68,6 +70,7 @@ function LogIn() {
     <div className="my-4">
       {/* アラート（あれば表示） */}
       <div className='max-w-md mx-auto'>
+        {location.state && location.state.createdUser && <AlertMessage message="アカウントが作成されました。" type="success" />}
         {formError.userName !== '' && <AlertMessage message={formError.userName} type="warning" />}
         {formError.passWord !== '' && <AlertMessage message={formError.passWord} type="warning" />}
         {formError.userAuth !== '' && <AlertMessage message={formError.userAuth} type="warning" />}

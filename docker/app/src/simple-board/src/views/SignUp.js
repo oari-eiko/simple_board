@@ -70,7 +70,7 @@ function SignUp() {
         })
         
         // トップページにリダイレクト
-        .then(response => { navigate('/'); })
+        .then(response => { navigate('/login', { state: { createdUser: true }}); })
         
         // エラー表示（ユーザー登録API） 
         .catch(error => console.log(error) );
