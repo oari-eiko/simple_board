@@ -13,9 +13,9 @@ function SignUp() {
   let navigate = useNavigate();
 
   // フォーム値
-  const [ formValues, setFormValues ] = useState({ userName: '', passWord: '' });
+  const [ formValues, setFormValues ] = useState({ userName: '', passWord: '', passWordSub: '' });
   // エラーメッセージ
-  const [ formError, setFormError ] = useState({ userName: '', passWord: '' });
+  const [ formError, setFormError ] = useState({ userName: '', passWord: '' , passWordSub: '' });
 
   // Changeイベントハンドラ
   function handleChange(event) {
@@ -36,6 +36,7 @@ function SignUp() {
     .then(response => {
       let userNameError = '';
       let passWordError = '';
+      let passWordSubError = '';
 
       // 登録済みか確認
       if (response.data.length !== 0) {
@@ -46,15 +47,23 @@ function SignUp() {
 
       // バリデーション（パスワード）
       passWordError =  validatePassWord(formValues.passWord);
+
+      // 確認用パスワード
+      if (formValues.passWord !== formValues.passWordSub) {
+        passWordSubError = '確認用パスワードが違います。';
+      } else {
+        passWordSubError = '';
+      }
       
       // バリデーション結果を格納
       setFormError({
         userName: userNameError,
         passWord: passWordError,
+        passWordSub: passWordSubError,
       });
       
       // 要件を満たしていればユーザーを登録
-      if (userNameError==='' && passWordError==='') {
+      if (userNameError==='' && passWordError==='' && passWordSubError==='') {
         axios.post('http://localhost:8080/users/', {
           name: formValues.userName,
           password: formValues.passWord,
@@ -74,10 +83,11 @@ function SignUp() {
   // JSX
   return (
     <div className="my-4">
-      {/* フォームエラー */}
+      {/* フォームエラー（エラーあれば表示） */}
       <div className='max-w-md mx-auto'>
         {formError.userName !== '' && <AlertMessage message={formError.userName} />}
         {formError.passWord !== '' && <AlertMessage message={formError.passWord} />}
+        {formError.passWordSub !== '' && <AlertMessage message={formError.passWordSub} />}
       </div>
       {/* <!-- ログインフォーム --> */}
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
@@ -94,7 +104,14 @@ function SignUp() {
             <input name='passWord' value={formValues.passWord} onChange={handleChange} className="mx-3 appearance-none bg-transparent text-gray-700 leading-tight focus:outline-none w-full" type="password" placeholder="パスワード" maxLength="30" />        
           </div>
           <div>
-            <p className='text-sm text-gray-500 mb-4'><small>※6文字以上30字以下の半角英数字（半角記号「 _ - 」も可）</small></p>
+            <p className='text-sm text-gray-500'><small>※6文字以上30字以下の半角英数字（半角記号「 _ - 」も可）</small></p>
+          </div>
+          {/* <!-- パスワード(確認用) --> */}
+          <div className="border-b border-yellow-600 py-1 mt-2 text-left">
+            <input name='passWordSub' value={formValues.passWordSub} onChange={handleChange} className="mx-3 appearance-none bg-transparent text-gray-700 leading-tight focus:outline-none w-full" type="password" placeholder="パスワード（確認用）" maxLength="30" />        
+          </div>
+          <div>
+            <p className='text-sm text-gray-500 mb-4'><small>※再度入力してください。</small></p>
           </div>
           {/* <!-- ボタン --> */}
           <div className="text-center my-4">
