@@ -32,7 +32,7 @@ services:
     tty: true
 
   # ---------------------------------
-  # APIサーバー（Django）
+  # APIサーバー（Laravel）
   # ---------------------------------
   api:
     # コンテナ名
@@ -46,27 +46,22 @@ services:
       - '${API_PORT}:${API_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
-      - ./docker/api/src:/api
+      - ./docker/api/src:/var/www/html                          # 公開用ディレクトリ（laravelプロジェクト格納先）
+      - ./docker/api/php.ini:/usr/local/etc/php/php.ini   
     # 作業ディレクトリ
-    working_dir: /api
+    working_dir: /var/www/html
+    # 環境変数
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASS}
+      - TZ=${TZ}
     # 指定コンテナの後に起動
     depends_on:
       - db
-    # 環境変数
-    environment:
-      - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - SQL_DATABASE=${SQL_DATABASE}
-      - SQL_USER=${SQL_USER}
-      - SQL_PASSWORD=${SQL_PASSWORD}
-      - SQL_HOST=${SQL_HOST}
-      - SQL_PORT=${SQL_PORT}
-      - TZ=${TZ}
-      - DEV_PORT=${DEV_PORT}
-      - APP_PORT=${APP_PORT}
-    # サーバーを立ち上げる
-    command: gunicorn --config /api/gunicorn.py
 
   # ---------------------------------
   # Webサーバー(Nginx)
@@ -93,46 +88,50 @@ services:
       - db
 
   # ---------------------------------
-  # データベース(PostgreSQL)
+  # データベース(MySQL)
   # ---------------------------------
   db:
     # コンテナ名
     container_name: simple_board_db
     # 公式イメージからビルド
-    image: postgres:14
+    image: mysql:8
     # ポート指定（コンテナ）
-    ports:
-      - '${DB_PORT}:${DB_PORT}'
+    expose:
+      - '${DB_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
-      - ./docker/db/data:/var/lib/postgresql/data                       # データ
-      - ./docker/db/sql:/docker-entrypoint-initdb.d                     # 初期化SQL
-      - ./docker/db/postgresql.conf:/etc/postgresql/postgresql.conf     # 設定ファイル
+      - ./docker/db/data:/var/lib/mysql                    # データ
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf        # 設定ファイル
+      - ./docker/db/logs:/var/log/mysql                    # ログファイル
+      - ./docker/db/sql:/docker-entrypoint-initdb.d        # 初期化SQL
     # 環境変数
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
       - TZ=${TZ}
 
   # ---------------------------------
-  # クライアントツール(pgAdmin)
+  # クライアントツール(PhpMyAdmin)
   # ---------------------------------
   client:
     # コンテナ名
     container_name: simple_board_client
     # 公式イメージからビルド
-    image: dpage/pgadmin4
+    image: phpmyadmin:5
     # ポート指定（ホスト:コンテナ）
     ports:
       - '${CLIENT_PORT}:${WEB_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
-      - ./docker/client/pgadmin:/var/lib/pgadmin
+      - ./docker/client/sessions:/sessions
     # 環境変数
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=${DB_HOST}
+      - PMA_USER=${DB_USER}
+      - PMA_PASSWORD=${DB_PASS}
       - TZ=${TZ}
     # 指定コンテナ起動完了後に起動
     depends_on:

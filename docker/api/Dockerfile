@@ -1,16 +1,28 @@
 # DockerHubから公式のdockerイメージを取り込む
-FROM python:3.10
+FROM php:8.1-fpm
 
-# Python専用の環境変数を設定
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
+# composerのインストール
+RUN cd /usr/bin && curl -s http://getcomposer.org/installer | php && ln -s /usr/bin/composer.phar /usr/bin/composer
 
-# ミドルウェアなどインストール
-RUN apt update
-RUN apt install -y gcc python3-dev
+# ミドルウェアのインストール
+RUN apt update && \
+apt -y install \
+git \
+zip \
+unzip \
+vim \
+libpng-dev \
+libpq-dev \
+&& docker-php-ext-install mysqli pdo_mysql
 
-# requirements.txtからモジュールをインストール
-WORKDIR /app
-RUN pip install --upgrade pip
-ADD requirements.txt /app/
-RUN pip install -r requirements.txt
+# # Node.jsとnpmをインストール
+# RUN apt -y install nodejs npm
+# RUN npm install -g npm
+# RUN npm install -g n
+# RUN n 16.16.0
+
+# laravelをインストール
+RUN composer global require laravel/installer
+
+# laravelコマンドを叩けるようにパスを通す
+ENV PATH $PATH:/root/.composer/vendor/bin
