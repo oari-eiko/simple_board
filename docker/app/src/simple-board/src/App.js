@@ -13,6 +13,7 @@ import './App.css';
 import Top from './views/Top';
 import SignUp from './views/SignUp';
 import LogIn from './views/LogIn';
+import Board from './views/Board';
 import NotFound from './views/NotFound';
 
 // Components
@@ -34,6 +35,7 @@ function App() {
             <Route exact path='/' element={<Top />} />
             <Route path='signup' element={<SignUp />} />
             <Route path='login' element={<LogIn />} />
+            <Route path='board' element={<Board />}></Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
