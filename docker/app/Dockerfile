@@ -10,4 +10,4 @@ unzip \
 vim
 
 # npmアップデート
-RUN npm install -g npm@8.17.0
+RUN npm install -g npm

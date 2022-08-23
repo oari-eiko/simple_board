@@ -9,7 +9,7 @@ function Top() {
   // effect
   useEffect(() => {
     // 全ユーザー取得API
-    axios.get('http://localhost:8080/users/')
+    axios.get('http://localhost:8080/api/users/')
     .then(res => {
       let UserList = res.data.map(user => {
         return (

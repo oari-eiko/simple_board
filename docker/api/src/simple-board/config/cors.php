@@ -18,8 +18,12 @@ return [
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
-
-    'allowed_origins' => ['*'],
+    
+    // 指定originのみ許可
+    'allowed_origins' => [
+        'http://'.env('ALLOWED_HOST').':'.env('APP_PORT'),
+        'http://'.env('ALLOWED_HOST').':'.env('DEV_PORT'),
+    ],
 
     'allowed_origins_patterns' => [],
 

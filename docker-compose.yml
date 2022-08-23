@@ -41,15 +41,12 @@ services:
     build:
       context: ./docker/api
       dockerfile: Dockerfile
-    # ポート指定
-    ports:
-      - '${API_PORT}:${API_PORT}'
     # ボリューム（Bind Mounts）
     volumes:
-      - ./docker/api/src:/var/www/html                          # 公開用ディレクトリ（laravelプロジェクト格納先）
+      - ./docker/api/src:/var/www                          # 公開用ディレクトリ（laravelAPI）
       - ./docker/api/php.ini:/usr/local/etc/php/php.ini   
     # 作業ディレクトリ
-    working_dir: /var/www/html
+    working_dir: /var/www
     # 環境変数
     environment:
       - DB_CONNECTION=mysql
@@ -58,6 +55,9 @@ services:
       - DB_DATABASE=${DB_NAME}
       - DB_USERNAME=${DB_USER}
       - DB_PASSWORD=${DB_PASS}
+      - APP_PORT=${APP_PORT}
+      - DEV_PORT=${DEV_PORT}
+      - ALLOWED_HOST=${ALLOWED_HOST}
       - TZ=${TZ}
     # 指定コンテナの後に起動
     depends_on:
@@ -76,6 +76,8 @@ services:
     # ポート指定（ホスト:コンテナ）
     ports:
       - '${APP_PORT}:${WEB_PORT}'
+      - '${API_PORT}:${API_PORT}'
+
     # ボリューム（Bind Mounts）
     volumes:
       - ./docker/web/logs:/var/log/nginx     # ログフォルダー
