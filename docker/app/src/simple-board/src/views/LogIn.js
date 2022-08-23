@@ -34,7 +34,7 @@ function LogIn() {
 
     // APIで認証処理
     axios
-    .get(`http://localhost:8080/users/user_auth/?name=${formValues.userName}&pw=${formValues.passWord}`)
+    .get(`http://localhost:8080/api/users/auth/?name=${formValues.userName}&pw=${formValues.passWord}`)
     .then(response => {
 
       // バリデーション（ユーザー名）
@@ -45,7 +45,7 @@ function LogIn() {
 
       // ユーザー名、パスワードが一致するかどうか
       let userAuthError = '';
-      if (userNameError==='' && passWordError==='' && response.data.length === 0) {
+      if (userNameError==='' && passWordError==='' && Object.keys(response.data).length===0) {
         userAuthError = 'ユーザー名、または、パスワードが違います。';
       }
       

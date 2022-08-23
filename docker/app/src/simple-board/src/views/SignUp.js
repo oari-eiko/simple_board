@@ -32,14 +32,14 @@ function SignUp() {
 
     // 既に登録済みかAPIで確認
     axios
-    .get('http://localhost:8080/users/get_username?name='+formValues.userName)
+    .get('http://localhost:8080/api/users/searchName?name='+formValues.userName)
     .then(response => {
       let userNameError = '';
       let passWordError = '';
       let passWordSubError = '';
 
       // 登録済みか確認
-      if (response.data.length !== 0) {
+      if (Object.keys(response.data).length !== 0) {
         userNameError = 'そのユーザー名は既に使用されています。';
       
       // バリデーション（ユーザー名）
@@ -64,7 +64,7 @@ function SignUp() {
       
       // 要件を満たしていればユーザーを登録
       if (userNameError==='' && passWordError==='' && passWordSubError==='') {
-        axios.post('http://localhost:8080/users/', {
+        axios.post('http://localhost:8080/api/users/', {
           name: formValues.userName,
           password: formValues.passWord,
         })
