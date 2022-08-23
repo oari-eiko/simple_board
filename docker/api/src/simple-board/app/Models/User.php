@@ -11,11 +11,13 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+    
+    // 紐づけるテーブル
+    protected $table = 'users';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * 代入可能カラム（createやupdateなどで）
+     * ブラックリスト形式のguardedでも代用可
      */
     protected $fillable = [
         'name',
@@ -24,9 +26,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * 取得対象外カラム
      */
     protected $hidden = [
         'password',
@@ -34,11 +34,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * 取得時に型キャストするカラム
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
 }
