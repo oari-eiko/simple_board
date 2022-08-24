@@ -20,7 +20,7 @@ class BoardFactory extends Factory
     {
         return [
             'user_id' => fake()->numberBetween(1,2),
-            'title' => fake()->title(),
+            'title' => fake()->sentence(),
             'caption' => fake()->text(200),
             'looked_user_ids' => '[{}]',
         ];
