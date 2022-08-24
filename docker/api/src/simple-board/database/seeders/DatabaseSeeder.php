@@ -14,8 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // ユーザー作成シーダー
-        $this->call(UserSeeder::class);
+        // シーダー登録
+        $this->call([
+            UserSeeder::class,      # ユーザー      
+            BoardSeeder::class,     # 掲示板
+        ]);
 
         // \App\Models\User::factory(10)->create();
 
