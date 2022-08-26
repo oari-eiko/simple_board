@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Board() {
+  // クッキー有効化
+  axios.defaults.withCredentials = true;
+
   // state
   const [ boardItems, setBoardItems ] = useState([]);
 

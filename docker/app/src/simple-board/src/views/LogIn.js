@@ -9,6 +9,9 @@ import AlertMessage from '../components/AlertMessage';
 import { validateUserName, validatePassWord } from '../utils/validation';
 
 function LogIn() {
+  // クッキー有効化
+  axios.defaults.withCredentials = true;
+
   // ナビゲート生成
   let navigate = useNavigate();
   // ロケーション生成
@@ -32,37 +35,43 @@ function LogIn() {
     // デフォルト動作を無くす
     event.preventDefault();
 
-    // APIで認証処理
-    axios
-    .get(`http://localhost:8080/api/users/auth/?name=${formValues.userName}&pw=${formValues.passWord}`)
-    .then(response => {
+    // バリデーション
+    let userAuthError = '';
+    let userNameError = validateUserName(formValues.userName);
+    let passWordError =  validatePassWord(formValues.passWord);
 
-      // バリデーション（ユーザー名）
-      let userNameError = validateUserName(formValues.userName);
+    // バリデーションに通ったか
+    if (userNameError==='' && passWordError==='') {
+      // APIで認証
+      axios.get('http://localhost:8080/sanctum/csrf-cookie').then(response => {
+        axios.post('http://localhost:8080/api/auth/login/', { 'name': formValues.userName, 'password': formValues.passWord })
+        .then(response => {
 
-      // バリデーション（パスワード）
-      let passWordError =  validatePassWord(formValues.passWord);
+          // 認証された場合はトークンを保存してホーム画面へ
+          if(response.data.status === 200){
+            navigate('/board');   // ホーム画面へ
+          
+          // 認証されなかったらアラートを表示
+          } else {
+            userAuthError = 'ユーザー名、またはパスワードが違います。';
+            setFormError({
+              userName: userNameError,
+              passWord: passWordError,
+              userAuth: userAuthError,
+            });
+          }
 
-      // ユーザー名、パスワードが一致するかどうか
-      let userAuthError = '';
-      if (userNameError==='' && passWordError==='' && Object.keys(response.data).length===0) {
-        userAuthError = 'ユーザー名、または、パスワードが違います。';
-      }
-      
-      // バリデーション結果を格納
+        }).catch(error => console.log(error));
+      }).catch(error => console.log(error));
+    
+    // 通らなかったらアラート表示 
+    } else {
       setFormError({
         userName: userNameError,
         passWord: passWordError,
         userAuth: userAuthError,
       });
-      
-      // 要件を満たしていればホーム画面へ
-      if (userNameError==='' && passWordError==='' && userAuthError==='') {
-        navigate('/board');
-      }
-    
-    // エラー表示（ユーザー名取得API）
-    }).catch(error => console.log(error) );
+    }
   }
 
   // JSX

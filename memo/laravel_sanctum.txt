@@ -1,0 +1,106 @@
+参考：https://readouble.com/laravel/9.x/ja/sanctum.html
+
+＜SPA認証手順＞
+1. sanctumライブラリをインストール
+composer require laravel/sanctum
+
+2. Sanctum設定ファイルと移行ファイルを公開する
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+3. マイグレーション(personal_access_tokensテーブルは特に使わないが)
+php artisan migrate
+
+4. 「app/Http/Kernel.php」のapiミドルウェアに'throttle:api'などを追加
+    （例）
+    'api' => [
+        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
+        // 以下を追加
+        'throttle:api',
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    ],
+
+5. SPAのフロントエンドサーバーのドメインを「config/sanctum.php」に追加
+    （例）
+    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+        '%s%s',
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1'
+        .',localhost:8888',      // 追加
+        Sanctum::currentApplicationUrlWithPort()
+    ))),
+
+6. CORS設定
+laravelのCORS設定（詳しくは省略）
+
+    （例）
+    return [
+        'paths' => ['api/*', 'sanctum/csrf-cookie'],  // corsを許可するパスの設定
+        'allowed_methods' => ['*'],
+        'allowed_origins' => ['*'],
+        'allowed_origins_patterns' => [],
+        'allowed_headers' => ['*'],
+        'exposed_headers' => [],
+        'max_age' => 0,
+        'supports_credentials' => true,　// クッキー認証の許可
+    ];
+
+
+7. セッション管理をDBに変更
+.envファイルの「SESSION_DRIVER=file」を「SESSION_DRIVER=database」に変更
+「php artisan session:table && php artisan migrate」を実行
+⇒ 「sessions」テーブルが作成される。
+
+8. フロントでログイン処理前に「/sanctum/csrf-cookie」にアクセス
+  ※ cookieを使用するために「axios.defaults.withCredentials = true;」を必ず設定する。
+
+    （例）
+    const signIn = () => {
+    // ログイン処理前にCSRFトークンを初期化
+    axios.get("/sanctum/csrf-cookie").then((response) => {
+        axios
+        .post("/api/login", {
+            email,
+            password,
+        })
+
+9. ログイン処理を作成
+
+    （例）
+    public function login(Request $request)
+    {
+        // ユーザーを認証（持続ログイン）
+        if (Auth::attempt($request->only(['name', 'password']), true)) {
+            $request->session()->regenerate();      // セッションを再生成
+            return response()->json([
+                'status' => 200,
+                'message' => '認証に成功しました。',
+            ]);
+        
+        // 認証できなかった場合
+        } else {
+            return response()->json([
+                'status' => 401,
+                'message' => 'ユーザーの認証に失敗しました。',
+            ]);
+        }
+    }
+
+10. 「config/session.php」の「'domain'」にSPAのドメインを追加
+（例） 'domain' => env('SESSION_DOMAIN', 'localhost'),
+
+
+＜sanctumを利用する上でのポイント＞
+・axiosなどでAPIにアクセスするときは、必ず「axios.defaults.withCredentials = true;」を必ず設定する。
+⇒ ログインしているか認識するためのクッキー(セッション)を渡すために必要。（laravel_session）
+
+・ログイン必須のAPIのルーティングについては、ミドルウェア「'auth:sanctum'」を追加する。
+⇒ ログイン中でない場合、401エラーを返す。
+
+・laravelのAuth関連を以下に記載
+ログイン -> Auth::attempt($request->only('ユーザー名', 'パスワード'));
+ログアウト -> Auth::logout()
+ログイン中かチェック -> Auth::check()

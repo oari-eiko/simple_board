@@ -45,25 +45,4 @@ class UserController extends Controller
             return response()->json([]);
         }
     }
-    /**
-     * ユーザー認証
-     */
-    public function auth(Request $request)
-    {
-        // ユーザー名とパスワードを取得
-        $username = $request->query('name');
-        $password = $request->query('pw');
-        if (!empty($username) && !empty($password)) {
-            // 該当ユーザー名のレコード取得
-            $user = User::where('name', $username)->first();
-            // パスワードをチェック
-            if (Hash::check($password, $user['password'])) {
-                return response()->json($user);
-            } else {
-                return response()->json([]);
-            }
-        } else {
-            return response()->json([]);
-        }
-    }
 }
