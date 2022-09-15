@@ -20,6 +20,9 @@ import NotFound from './views/NotFound';
 import MainHeader from './components/MainHeader';
 import MainFooter from './components/MainFooter';
 
+// Utilities
+import Private from './utils/Private';
+
 // Router
 function App() {
   return (
@@ -35,7 +38,12 @@ function App() {
             <Route exact path='/' element={<Top />} />
             <Route path='signup' element={<SignUp />} />
             <Route path='login' element={<LogIn />} />
-            <Route path='board' element={<Board />}></Route>
+            
+            {/* ログイン必須ルート */}
+            <Route element={<Private />}>
+              <Route path='board' element={<Board />} />
+            </Route>
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
